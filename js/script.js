@@ -47,12 +47,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 const angle = Math.atan2(dy, dx);
                 const pushDistance = radius - distance;
 
-                // Move the ball
+                // Update ball position
                 ball.x += Math.cos(angle) * pushDistance;
                 ball.y += Math.sin(angle) * pushDistance;
 
-                // Update the ball's position
-                ball.element.style.transform = `translate(${ball.x}px, ${ball.y}px)`;
+                // Apply the updated position
+                ball.element.style.left = `${ball.x}px`;
+                ball.element.style.top = `${ball.y}px`;
             }
         });
     });
