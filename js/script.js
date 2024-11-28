@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const radius = 50; // Cursor interaction radius
     const gravity = 0.2; // Gravity constant
     const damping = 0.8; // Damping factor for deformation
-    const friction = 0.995; // Friction multiplier (1 = no friction, <1 adds friction)
+    const friction = 0.99; // Friction multiplier (1 = no friction, <1 adds friction)
     const restThreshold = 0.1; // Velocity threshold to stop bouncing
 
     // Ball properties
@@ -91,9 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateBalls() {
-        // Get precise bounding box for the text block
-        const textBox = document.querySelector("#background").getBoundingClientRect();
-
         balls.forEach((ball, i) => {
             ball.x += ball.velocityX;
             ball.y += ball.velocityY;
@@ -109,20 +106,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (ball.x < 0) {
                 ball.x = 0;
                 ball.velocityX = -ball.velocityX * damping;
-                ball.scaleX = 1.2; // Slight deformation
-                ball.scaleY = 0.8;
             }
             if (ball.x + ball.size > window.innerWidth) {
                 ball.x = window.innerWidth - ball.size;
                 ball.velocityX = -ball.velocityX * damping;
-                ball.scaleX = 1.2;
-                ball.scaleY = 0.8;
             }
             if (ball.y < 0) {
                 ball.y = 0;
                 ball.velocityY = -ball.velocityY * damping;
-                ball.scaleX = 0.8;
-                ball.scaleY = 1.2;
             }
             if (ball.y + ball.size > window.innerHeight) {
                 ball.y = window.innerHeight - ball.size;
@@ -130,25 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Stop vertical motion if velocity is below the rest threshold
                 if (Math.abs(ball.velocityY) < restThreshold) {
                     ball.velocityY = 0;
+                    ball.scaleX = 1; // Reset scale
+                    ball.scaleY = 1; // Reset scale
                 } else {
-                    ball.velocityY = -ball.velocityY * damping;
-                }
-
-                ball.scaleX = 0.8;
-                ball.scaleY = 1.2;
-            }
-
-            // Bounce off the text box edges
-            if (
-                ball.x + ball.radius > textBox.left &&
-                ball.x - ball.radius < textBox.right &&
-                ball.y + ball.radius > textBox.top &&
-                ball.y - ball.radius < textBox.bottom
-            ) {
-                if (ball.x < textBox.left || ball.x + ball.size > textBox.right) {
-                    ball.velocityX = -ball.velocityX * damping;
-                }
-                if (ball.y < textBox.top || ball.y + ball.size > textBox.bottom) {
                     ball.velocityY = -ball.velocityY * damping;
                 }
             }
@@ -158,9 +133,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 resolveCollision(ball, balls[j]);
             }
 
-            // Restore to original scale
-            ball.scaleX += (1 - ball.scaleX) * 0.1;
-            ball.scaleY += (1 - ball.scaleY) * 0.1;
+            // Restore to original scale if not already reset
+            if (Math.abs(ball.velocityY) >= restThreshold) {
+                ball.scaleX += (1 - ball.scaleX) * 0.1;
+                ball.scaleY += (1 - ball.scaleY) * 0.1;
+            }
 
             // Update position and transformation
             ball.element.style.left = `${ball.x}px`;
