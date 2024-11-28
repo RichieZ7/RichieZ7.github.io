@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
     const balls = [];
-    const radius = 30; // Cursor interaction radius
+    const radius = 15; // Cursor interaction radius
     const gravity = 0.2; // Gravity constant
     const damping = 0.8; // Damping factor for deformation
     const friction = 0.99; // Friction multiplier (1 = no friction, <1 adds friction)
@@ -34,8 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         balls.push({
             element: ball,
-            x, // Center x-coordinate
-            y, // Center y-coordinate
+            x,
+            y,
             size,
             radius: size / 2,
             velocityX: Math.random() * 2 - 1,
@@ -49,31 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("mousemove", (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
-
-        // balls.forEach((ball) => {
-        //     const dx = ball.x - mouseX;
-        //     const dy = ball.y - mouseY;
-        //     const distance = Math.sqrt(dx * dx + dy * dy);
-
-        //     if (distance < ball.radius + radius) {
-        //         const angle = Math.atan2(dy, dx);
-        //         const pushDistance = ball.radius + radius - distance;
-
-        //         const force = pushDistance * 0.2;
-        //         ball.velocityX += Math.cos(angle) * force;
-        //         ball.velocityY += Math.sin(angle) * force;
-
-        //         // Apply deformation
-        //         const cos = Math.cos(angle); // Horizontal influence
-        //         const sin = Math.sin(angle); // Vertical influence
-                
-        //         const deformation = Math.min(force * 0.05, 0.2);
-        //         ball.scaleX = 1 + deformation;
-        //         ball.scaleY = 1 - deformation;
-        //     }
-        // });
     });
 
+    // Ball Collisions
     function resolveCollision(ball1, ball2) {
         const dx = ball1.x - ball2.x;
         const dy = ball1.y - ball2.y;
@@ -139,16 +117,22 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             if (ball.y + ball.radius > window.innerHeight) {
                 ball.y = window.innerHeight - ball.radius;
-                ball.velocityY = -ball.velocityY * damping;
-                ball.scaleX = 1.2;
-                ball.scaleY = 0.8;
+
+                if (ball.velocityY < 0.1) {
+                    ball.velocityY = 0;
+                }
+                {
+                    ball.velocityY = -ball.velocityY * damping;
+                    ball.scaleX = 1.2;
+                    ball.scaleY = 0.8;
+                }
             }
 
             // Check collision with cursor
             if (mouseX !== null && mouseY !== null) {
-            const dx = ball.x - mouseX;
-            const dy = ball.y - mouseY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+                const dx = ball.x - mouseX;
+                const dy = ball.y - mouseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
 
             if (distance < ball.radius + radius) {
                 const angle = Math.atan2(dy, dx);
@@ -173,21 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             ball.scaleX += (1 - ball.scaleX) * 0.1;
             ball.scaleY += (1 - ball.scaleY) * 0.1;
-
-
-            // Restore to original scale
-            // if (Math.abs(1 - ball.scaleX) < 1.03) {
-            //     ball.scaleX = 1;
-            // }
-            // else {
-            //     ball.scaleX += (1 - ball.scaleX) * 0.1;
-            // }
-            // if (Math.abs(1 - ball.scaleY) < 1.03) {
-            //     ball.scaleY = 1;
-            // }
-            // else {
-            //     ball.scaleY += (1 - ball.scaleY) * 0.1;
-            // }
 
             // Update position and transformation
             ball.element.style.left = `${ball.x - ball.radius}px`;
