@@ -1,23 +1,23 @@
 // document.addEventListener("DOMContentLoaded", () => {
 //     const body = document.body;
-//     const numBalls = 5; // Adjust as needed
 //     const balls = [];
 //     const radius = 50; // Cursor interaction radius
 //     const gravity = 0.2; // Gravity constant
 //     const damping = 0.8; // Damping factor for deformation
+
+//     // Ball properties
+//     const ballColors = ['red', 'green', 'blue']; // RGB colors
+//     const numBalls = ballColors.length; // 3 balls
 
 //     // Generate balls
 //     for (let i = 0; i < numBalls; i++) {
 //         const ball = document.createElement("div");
 //         ball.classList.add("ball");
 
-//         const size = Math.random() * 50 + 100; // Ball size
+//         const size = Math.random() * 100 + 50; // Random size between 50px and 150px
 //         const x = Math.random() * (window.innerWidth - size);
 //         const y = Math.random() * (window.innerHeight - size);
-
-//         // Random lightness for shades of gray (e.g., 20% to 80% lightness)
-//         const lightness = Math.random() * 60 + 20; // Range: 20% to 80%
-//         const color = `hsl(0, 0%, ${lightness}%)`;
+//         const color = ballColors[i];
 
 //         ball.style.width = `${size}px`;
 //         ball.style.height = `${size}px`;
@@ -54,12 +54,12 @@
 //                 const angle = Math.atan2(dy, dx);
 //                 const pushDistance = radius - distance;
 
-//                 const force = pushDistance * 0.1;
+//                 const force = pushDistance * 0.2; // Increased force
 //                 ball.velocityX += Math.cos(angle) * force;
 //                 ball.velocityY += Math.sin(angle) * force;
 
-//                 // Apply deformation based on force
-//                 const deformation = Math.min(force * 0.1, 0.5); // Increased deformation
+//                 // Apply less significant deformation based on force
+//                 const deformation = Math.min(force * 0.05, 0.2); // Reduced deformation
 //                 ball.scaleX = 1 + deformation;
 //                 ball.scaleY = 1 - deformation;
 //             }
@@ -102,27 +102,27 @@
 //             // Bounce off edges
 //             if (ball.x < 0) {
 //                 ball.x = 0;
-//                 ball.velocityX = -ball.velocityX * damping; // Add damping
-//                 ball.scaleX = 1.5; // Deformation on collision
-//                 ball.scaleY = 0.5;
+//                 ball.velocityX = -ball.velocityX * damping;
+//                 ball.scaleX = 1.2; // Slight deformation
+//                 ball.scaleY = 0.8;
 //             }
 //             if (ball.x + ball.size > window.innerWidth) {
 //                 ball.x = window.innerWidth - ball.size;
 //                 ball.velocityX = -ball.velocityX * damping;
-//                 ball.scaleX = 1.5;
-//                 ball.scaleY = 0.5;
+//                 ball.scaleX = 1.2;
+//                 ball.scaleY = 0.8;
 //             }
 //             if (ball.y < 0) {
 //                 ball.y = 0;
 //                 ball.velocityY = -ball.velocityY * damping;
-//                 ball.scaleX = 0.5;
-//                 ball.scaleY = 1.5;
+//                 ball.scaleX = 0.8;
+//                 ball.scaleY = 1.2;
 //             }
 //             if (ball.y + ball.size > window.innerHeight) {
 //                 ball.y = window.innerHeight - ball.size;
 //                 ball.velocityY = -ball.velocityY * damping;
-//                 ball.scaleX = 0.5;
-//                 ball.scaleY = 1.5;
+//                 ball.scaleX = 0.8;
+//                 ball.scaleY = 1.2;
 //             }
 
 //             // Bounce off the text box
@@ -171,12 +171,14 @@
 //     });
 // });
 
+
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
     const balls = [];
-    const radius = 100; // Cursor interaction radius
+    const radius = 50; // Cursor interaction radius
     const gravity = 0.2; // Gravity constant
     const damping = 0.8; // Damping factor for deformation
+    const friction = 0.99; // Friction multiplier (1 = no friction, <1 adds friction)
 
     // Ball properties
     const ballColors = ['red', 'green', 'blue']; // RGB colors
@@ -272,6 +274,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // Apply gravity
             ball.velocityY += gravity;
 
+            // Apply friction
+            ball.velocityX *= friction;
+            ball.velocityY *= friction;
+
             // Bounce off edges
             if (ball.x < 0) {
                 ball.x = 0;
@@ -298,12 +304,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 ball.scaleY = 1.2;
             }
 
-            // Bounce off the text box
+            // Bounce off the text box edges
             if (
                 ball.x + ball.radius > textBox.left &&
-                ball.x + ball.radius < textBox.right &&
+                ball.x - ball.radius < textBox.right &&
                 ball.y + ball.radius > textBox.top &&
-                ball.y + ball.radius < textBox.bottom
+                ball.y - ball.radius < textBox.bottom
             ) {
                 if (ball.x < textBox.left || ball.x + ball.size > textBox.right) {
                     ball.velocityX = -ball.velocityX * damping;
@@ -343,5 +349,3 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
-
-
