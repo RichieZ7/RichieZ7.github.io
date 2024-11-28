@@ -1,43 +1,39 @@
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
-    const numBalls = 100; // Number of balls
+    const numBalls = 100; // Adjust as needed
     const balls = [];
-    const radius = 50; // Reduced radius around the cursor
+    const radius = 50;
 
-    // Generate random balls
+    // Generate balls
     for (let i = 0; i < numBalls; i++) {
         const ball = document.createElement("div");
         ball.classList.add("ball");
 
-        // Random size (10px to 30px)
         const size = Math.random() * 20 + 10;
+        const x = Math.random() * (window.innerWidth - size);
+        const y = Math.random() * (window.innerHeight - size);
 
-        // Random position
-        const x = Math.random() * window.innerWidth;
-        const y = Math.random() * window.innerHeight;
-
-        // Random lightness for shades of gray
-        const lightness = Math.random() * 100; // 0% to 100%
+        // Random lightness for shades of gray (if desired)
+        const lightness = Math.random() * 100;
         const color = `hsl(0, 0%, ${lightness}%)`;
 
-        // Apply styles to the ball
         ball.style.width = `${size}px`;
         ball.style.height = `${size}px`;
         ball.style.backgroundColor = color;
         ball.style.left = `${x}px`;
         ball.style.top = `${y}px`;
 
-        // Add ball to the body
         body.appendChild(ball);
 
-        // Store ball properties and add random velocity for drifting
         balls.push({
             element: ball,
             x,
             y,
             size,
-            velocityX: Math.random() * 2 - 1, // Random X velocity
-            velocityY: Math.random() * 2 - 1, // Random Y velocity
+            velocityX: Math.random() * 2 - 1,
+            velocityY: Math.random() * 2 - 1,
+            scaleX: 1,
+            scaleY: 1,
         });
     }
 
@@ -47,58 +43,86 @@ document.addEventListener("DOMContentLoaded", () => {
         const mouseY = e.clientY;
 
         balls.forEach((ball) => {
-            const dx = ball.x - mouseX;
-            const dy = ball.y - mouseY;
+            const dx = ball.x + ball.size / 2 - mouseX;
+            const dy = ball.y + ball.size / 2 - mouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            // If the ball is within the radius, push it away
             if (distance < radius) {
                 const angle = Math.atan2(dy, dx);
                 const pushDistance = radius - distance;
 
-                // Push the ball
-                ball.velocityX += Math.cos(angle) * pushDistance * 0.1;
-                ball.velocityY += Math.sin(angle) * pushDistance * 0.1;
+                const force = pushDistance * 0.1;
+                ball.velocityX += Math.cos(angle) * force;
+                ball.velocityY += Math.sin(angle) * force;
+
+                // Apply deformation based on force
+                const deformation = Math.min(force * 0.05, 0.3);
+                ball.scaleX = 1 + deformation;
+                ball.scaleY = 1 - deformation;
             }
         });
     });
 
-    // Update ball positions and handle drifting
     function updateBalls() {
         balls.forEach((ball) => {
-            // Apply velocity to position
             ball.x += ball.velocityX;
             ball.y += ball.velocityY;
 
             // Bounce off edges
-            if (ball.x < 0 || ball.x + ball.size > window.innerWidth) {
-                ball.velocityX = -ball.velocityX; // Reverse X velocity
+            if (ball.x < 0) {
+                ball.x = 0;
+                ball.velocityX = -ball.velocityX;
+
+                // Deform on bounce
+                ball.scaleX = 1.3;
+                ball.scaleY = 0.7;
             }
-            if (ball.y < 0 || ball.y + ball.size > window.innerHeight) {
-                ball.velocityY = -ball.velocityY; // Reverse Y velocity
+            if (ball.x + ball.size > window.innerWidth) {
+                ball.x = window.innerWidth - ball.size;
+                ball.velocityX = -ball.velocityX;
+
+                ball.scaleX = 1.3;
+                ball.scaleY = 0.7;
+            }
+            if (ball.y < 0) {
+                ball.y = 0;
+                ball.velocityY = -ball.velocityY;
+
+                ball.scaleX = 0.7;
+                ball.scaleY = 1.3;
+            }
+            if (ball.y + ball.size > window.innerHeight) {
+                ball.y = window.innerHeight - ball.size;
+                ball.velocityY = -ball.velocityY;
+
+                ball.scaleX = 0.7;
+                ball.scaleY = 1.3;
             }
 
-            // Apply friction to slow down drifting
+            // Apply friction
             ball.velocityX *= 0.98;
             ball.velocityY *= 0.98;
 
-            // Update ball's position in the DOM
+            // Restore to original scale
+            ball.scaleX += (1 - ball.scaleX) * 0.1;
+            ball.scaleY += (1 - ball.scaleY) * 0.1;
+
+            // Update position and transformation
             ball.element.style.left = `${ball.x}px`;
             ball.element.style.top = `${ball.y}px`;
+            ball.element.style.transform = `scale(${ball.scaleX}, ${ball.scaleY})`;
         });
 
-        // Schedule the next update
         requestAnimationFrame(updateBalls);
     }
 
-    // Start the animation loop
     updateBalls();
 
-    // Adjust balls when the window is resized
+    // Adjust balls on window resize
     window.addEventListener("resize", () => {
         balls.forEach((ball) => {
-            ball.x = Math.random() * window.innerWidth;
-            ball.y = Math.random() * window.innerHeight;
+            ball.x = Math.random() * (window.innerWidth - ball.size);
+            ball.y = Math.random() * (window.innerHeight - ball.size);
             ball.element.style.left = `${ball.x}px`;
             ball.element.style.top = `${ball.y}px`;
         });
