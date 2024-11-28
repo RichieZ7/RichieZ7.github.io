@@ -7,9 +7,14 @@ body {
     overflow: hidden; /* Prevent scrolling */
     background-color: #000; /* Dark background */
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+}
+
+/* Background container for the text */
+#background {
+    position: relative;
+    z-index: 2; /* Ensures text stays on top of the balls */
+    text-align: center; /* Centers the text horizontally */
+    color: #fff; /* White text color for visibility */
 }
 
 /* Ball styling */
@@ -18,4 +23,5 @@ body {
     border-radius: 50%; /* Makes the ball circular */
     pointer-events: none; /* Ignore mouse clicks on balls */
     transition: transform 0.1s ease; /* Smooth movement effect */
+    z-index: 1; /* Ensure balls are behind the text */
 }
