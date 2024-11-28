@@ -95,3 +95,9 @@ p {
 .contact-link i {
     font-size: 1.5em; /* Icon size */
 }
+
+/* Contact Section */
+.contact-only {
+    display: flex;
+    gap: 40px; /* Space between icons */
+}
