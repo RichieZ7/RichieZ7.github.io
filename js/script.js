@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const gravity = 0.2; // Gravity constant
     const damping = 0.8; // Damping factor for deformation
     const friction = 0.99; // Friction multiplier (1 = no friction, <1 adds friction)
+    let mouseX = null;
+    let mouseY = null;
 
     // Ball properties
     const ballColors = ['red', 'green', 'blue']; // RGB colors
@@ -45,31 +47,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Cursor movement
     document.addEventListener("mousemove", (e) => {
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
+        mouseX = e.clientX;
+        mouseY = e.clientY;
 
-        balls.forEach((ball) => {
-            const dx = ball.x - mouseX;
-            const dy = ball.y - mouseY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+        // balls.forEach((ball) => {
+        //     const dx = ball.x - mouseX;
+        //     const dy = ball.y - mouseY;
+        //     const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance < ball.radius + radius) {
-                const angle = Math.atan2(dy, dx);
-                const pushDistance = ball.radius + radius - distance;
+        //     if (distance < ball.radius + radius) {
+        //         const angle = Math.atan2(dy, dx);
+        //         const pushDistance = ball.radius + radius - distance;
 
-                const force = pushDistance * 0.2;
-                ball.velocityX += Math.cos(angle) * force;
-                ball.velocityY += Math.sin(angle) * force;
+        //         const force = pushDistance * 0.2;
+        //         ball.velocityX += Math.cos(angle) * force;
+        //         ball.velocityY += Math.sin(angle) * force;
 
-                // Apply deformation
-                const cos = Math.cos(angle); // Horizontal influence
-                const sin = Math.sin(angle); // Vertical influence
+        //         // Apply deformation
+        //         const cos = Math.cos(angle); // Horizontal influence
+        //         const sin = Math.sin(angle); // Vertical influence
                 
-                const deformation = Math.min(force * 0.05, 0.2);
-                ball.scaleX = 1 + deformation;
-                ball.scaleY = 1 - deformation;
-            }
-        });
+        //         const deformation = Math.min(force * 0.05, 0.2);
+        //         ball.scaleX = 1 + deformation;
+        //         ball.scaleY = 1 - deformation;
+        //     }
+        // });
     });
 
     function resolveCollision(ball1, ball2) {
@@ -141,6 +143,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 ball.scaleX = 1.2;
                 ball.scaleY = 0.8;
             }
+
+            // Check collision with cursor
+            if (mouseX !== null && mouseY !== null) {
+            const dx = ball.x - mouseX;
+            const dy = ball.y - mouseY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < ball.radius + radius) {
+                const angle = Math.atan2(dy, dx);
+                const pushDistance = ball.radius + radius - distance;
+
+                const force = pushDistance * 0.2;
+                ball.velocityX += Math.cos(angle) * force;
+                ball.velocityY += Math.sin(angle) * force;
+
+                // Apply deformation based on angle
+                const absCos = Math.cos(angle);
+                const absSin = Math.sin(angle);
+                ball.scaleX = 1 + 0.2 * absCos;
+                ball.scaleY = 1 + 0.2 * absSin;
+            }
+        }
 
             // Check collisions with other balls
             for (let j = i + 1; j < balls.length; j++) {
