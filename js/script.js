@@ -4,12 +4,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const balls = [];
     const radius = 50;
 
+    // Add letters to the DOM
+    const letters = [];
+    const textContainer = document.getElementById("background");
+    const textElements = textContainer.querySelectorAll("h1, p");
+
+    textElements.forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        letters.push({
+            element: element,
+            rect: rect,
+        });
+    });
+
     // Generate balls
     for (let i = 0; i < numBalls; i++) {
         const ball = document.createElement("div");
         ball.classList.add("ball");
 
-        const size = Math.random() * 50 + 100;
+        const size = Math.random() * 75 + 100;
         const x = Math.random() * (window.innerWidth - size);
         const y = Math.random() * (window.innerHeight - size);
 
@@ -32,39 +45,29 @@ document.addEventListener("DOMContentLoaded", () => {
             size,
             velocityX: Math.random() * 2 - 1,
             velocityY: Math.random() * 2 - 1,
-            scaleX: 1,
-            scaleY: 1,
         });
     }
 
-    // Cursor movement
-    document.addEventListener("mousemove", (e) => {
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
+    // Detect collision between ball and a letter
+    function detectLetterCollision(ball, letter) {
+        const ballRect = {
+            left: ball.x,
+            right: ball.x + ball.size,
+            top: ball.y,
+            bottom: ball.y + ball.size,
+        };
 
-        balls.forEach((ball) => {
-            const dx = ball.x + ball.size / 2 - mouseX;
-            const dy = ball.y + ball.size / 2 - mouseY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+        return !(
+            ballRect.right < letter.rect.left ||
+            ballRect.left > letter.rect.right ||
+            ballRect.bottom < letter.rect.top ||
+            ballRect.top > letter.rect.bottom
+        );
+    }
 
-            if (distance < radius) {
-                const angle = Math.atan2(dy, dx);
-                const pushDistance = radius - distance;
-
-                const force = pushDistance * 0.1;
-                ball.velocityX += Math.cos(angle) * force;
-                ball.velocityY += Math.sin(angle) * force;
-
-                // Apply deformation based on force
-                const deformation = Math.min(force * 0.05, 0.3);
-                ball.scaleX = 1 + deformation;
-                ball.scaleY = 1 - deformation;
-            }
-        });
-    });
-
+    // Update balls
     function updateBalls() {
-        balls.forEach((ball) => {
+        balls.forEach((ball, i) => {
             ball.x += ball.velocityX;
             ball.y += ball.velocityY;
 
@@ -72,45 +75,63 @@ document.addEventListener("DOMContentLoaded", () => {
             if (ball.x < 0) {
                 ball.x = 0;
                 ball.velocityX = -ball.velocityX;
-
-                // Deform on bounce
-                ball.scaleX = 1.3;
-                ball.scaleY = 0.7;
             }
             if (ball.x + ball.size > window.innerWidth) {
                 ball.x = window.innerWidth - ball.size;
                 ball.velocityX = -ball.velocityX;
-
-                ball.scaleX = 1.3;
-                ball.scaleY = 0.7;
             }
             if (ball.y < 0) {
                 ball.y = 0;
                 ball.velocityY = -ball.velocityY;
-
-                ball.scaleX = 0.7;
-                ball.scaleY = 1.3;
             }
             if (ball.y + ball.size > window.innerHeight) {
                 ball.y = window.innerHeight - ball.size;
                 ball.velocityY = -ball.velocityY;
-
-                ball.scaleX = 0.7;
-                ball.scaleY = 1.3;
             }
+
+            // Check for collisions with other balls
+            for (let j = i + 1; j < balls.length; j++) {
+                const otherBall = balls[j];
+                const dx = (ball.x + ball.size / 2) - (otherBall.x + otherBall.size / 2);
+                const dy = (ball.y + ball.size / 2) - (otherBall.y + otherBall.size / 2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < (ball.size / 2 + otherBall.size / 2)) {
+                    // Resolve collision
+                    const nx = dx / distance;
+                    const ny = dy / distance;
+                    const p = 2 * (ball.velocityX * nx + ball.velocityY * ny -
+                        otherBall.velocityX * nx - otherBall.velocityY * ny) /
+                        (ball.size + otherBall.size);
+                    ball.velocityX -= p * otherBall.size * nx;
+                    ball.velocityY -= p * otherBall.size * ny;
+                    otherBall.velocityX += p * ball.size * nx;
+                    otherBall.velocityY += p * ball.size * ny;
+                }
+            }
+
+            // Check for collisions with letters
+            letters.forEach((letter) => {
+                if (detectLetterCollision(ball, letter)) {
+                    const letterRect = letter.rect;
+
+                    // Reverse velocity based on collision side
+                    if (ball.x < letterRect.right && ball.x + ball.size > letterRect.left) {
+                        ball.velocityX = -ball.velocityX;
+                    }
+                    if (ball.y < letterRect.bottom && ball.y + ball.size > letterRect.top) {
+                        ball.velocityY = -ball.velocityY;
+                    }
+                }
+            });
 
             // Apply friction
             ball.velocityX *= 0.98;
             ball.velocityY *= 0.98;
 
-            // Restore to original scale
-            ball.scaleX += (1 - ball.scaleX) * 0.1;
-            ball.scaleY += (1 - ball.scaleY) * 0.1;
-
-            // Update position and transformation
+            // Update position
             ball.element.style.left = `${ball.x}px`;
             ball.element.style.top = `${ball.y}px`;
-            ball.element.style.transform = `scale(${ball.scaleX}, ${ball.scaleY})`;
         });
 
         requestAnimationFrame(updateBalls);
@@ -118,13 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateBalls();
 
-    // Adjust balls on window resize
+    // Update letter positions on resize
     window.addEventListener("resize", () => {
-        balls.forEach((ball) => {
-            ball.x = Math.random() * (window.innerWidth - ball.size);
-            ball.y = Math.random() * (window.innerHeight - ball.size);
-            ball.element.style.left = `${ball.x}px`;
-            ball.element.style.top = `${ball.y}px`;
+        letters.forEach((letter) => {
+            letter.rect = letter.element.getBoundingClientRect();
         });
     });
 });
