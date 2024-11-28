@@ -57,9 +57,9 @@ p {
     content: '';
     position: absolute;
     left: 50%;
-    bottom: -5px; /* Adjusts the distance below the text */
+    bottom: -2px; /* Adjusts the distance below the text */
     transform: translateX(-50%);
-    width: 50%; /* Adjusts the underline length */
+    width: 75%; /* Adjusts the underline length */
     height: 2px; /* Adjusts the underline thickness */
     background-color: #ADD8E6; /* Light blue color */
 }
