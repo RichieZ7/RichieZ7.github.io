@@ -1,12 +1,48 @@
 /* css/styles.css */
+
+/* General body styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
 }
 
-h1 {
-    color: #333;
+/* Centered content */
+#background {
     text-align: center;
+    z-index: 1;
+    position: relative;
+}
+
+/* Ball styling */
+.ball {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b6b, #f94f6b);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.8;
+    animation: float 4s infinite ease-in-out;
+}
+
+/* Animation for a floating effect */
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0);
+    }
 }
