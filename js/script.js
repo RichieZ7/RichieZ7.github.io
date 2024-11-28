@@ -1,21 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
-    const numBalls = 2; // Adjust as needed
+    const numBalls = 5; // Adjust as needed
     const balls = [];
-    const radius = 50;
-
-    // Add letters to the DOM
-    const letters = [];
-    const textContainer = document.getElementById("background");
-    const textElements = textContainer.querySelectorAll("h1, p");
-
-    textElements.forEach((element) => {
-        const rect = element.getBoundingClientRect();
-        letters.push({
-            element: element,
-            rect: rect,
-        });
-    });
 
     // Generate balls
     for (let i = 0; i < numBalls; i++) {
@@ -46,23 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
             velocityX: Math.random() * 2 - 1,
             velocityY: Math.random() * 2 - 1,
         });
-    }
-
-    // Detect collision between ball and a letter
-    function detectLetterCollision(ball, letter) {
-        const ballRect = {
-            left: ball.x,
-            right: ball.x + ball.size,
-            top: ball.y,
-            bottom: ball.y + ball.size,
-        };
-
-        return !(
-            ballRect.right < letter.rect.left ||
-            ballRect.left > letter.rect.right ||
-            ballRect.bottom < letter.rect.top ||
-            ballRect.top > letter.rect.bottom
-        );
     }
 
     // Update balls
@@ -110,21 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
-            // Check for collisions with letters
-            letters.forEach((letter) => {
-                if (detectLetterCollision(ball, letter)) {
-                    const letterRect = letter.rect;
-
-                    // Reverse velocity based on collision side
-                    if (ball.x < letterRect.right && ball.x + ball.size > letterRect.left) {
-                        ball.velocityX = -ball.velocityX;
-                    }
-                    if (ball.y < letterRect.bottom && ball.y + ball.size > letterRect.top) {
-                        ball.velocityY = -ball.velocityY;
-                    }
-                }
-            });
-
             // Apply friction
             ball.velocityX *= 0.98;
             ball.velocityY *= 0.98;
@@ -138,11 +92,4 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     updateBalls();
-
-    // Update letter positions on resize
-    window.addEventListener("resize", () => {
-        letters.forEach((letter) => {
-            letter.rect = letter.element.getBoundingClientRect();
-        });
-    });
 });
