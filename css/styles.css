@@ -59,7 +59,7 @@ p {
     left: 50%;
     bottom: -2px; /* Adjusts the distance below the text */
     transform: translateX(-50%);
-    width: 75%; /* Adjusts the underline length */
+    width: 90%; /* Adjusts the underline length */
     height: 2px; /* Adjusts the underline thickness */
     background-color: #ADD8E6; /* Light blue color */
 }
