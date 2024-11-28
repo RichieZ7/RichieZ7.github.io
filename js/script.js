@@ -148,15 +148,16 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Restore to original scale
-            if (Math.abs(1 - ball.scaleX) < 1.05) {
+            if (Math.abs(1 - ball.scaleX) < 1.03) {
                 ball.scaleX = 1;
             }
             else {
                 ball.scaleX += (1 - ball.scaleX) * 0.1;
             }
-            if (Math.abs(1 - ball.scaleY) < 1.05) {
+            if (Math.abs(1 - ball.scaleY) < 1.03) {
                 ball.scaleY = 1;
-                ball.y = ball.radius
+                ball.y = ball.radius;
+                ball.velocityY = 0;
             }
             else {
                 ball.scaleY += (1 - ball.scaleY) * 0.1;
