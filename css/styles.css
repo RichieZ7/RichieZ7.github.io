@@ -15,6 +15,7 @@ body {
     z-index: 2; /* Ensures text stays on top of the balls */
     text-align: center; /* Centers the text horizontally */
     color: #fff; /* White text color for visibility */
+    pointer-events: none; /* Allow interactions to pass through */
 }
 
 /* Ball styling */

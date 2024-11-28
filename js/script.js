@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
-    const numBalls = 1000; // Number of balls
+    const numBalls = 100; // Number of balls
     const balls = [];
     const radius = 50; // Reduced radius around the cursor
 
