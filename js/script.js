@@ -1,7 +1,31 @@
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
-    const numBalls = 5; // Adjust as needed
+    const numBalls = 2; // Adjust as needed
     const balls = [];
+    const textContainer = document.getElementById("background");
+    const textElements = textContainer.querySelectorAll("h1, p");
+
+    // Collect letters and their positions
+    let letters = [];
+    function updateLetters() {
+        letters = [];
+        textElements.forEach((element) => {
+            const rect = element.getBoundingClientRect();
+            letters.push({
+                rect: {
+                    left: rect.left,
+                    right: rect.right,
+                    top: rect.top,
+                    bottom: rect.bottom,
+                    width: rect.width,
+                    height: rect.height,
+                    x: rect.x,
+                    y: rect.y,
+                },
+            });
+        });
+    }
+    updateLetters();
 
     // Generate balls
     for (let i = 0; i < numBalls; i++) {
@@ -19,8 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
         ball.style.width = `${size}px`;
         ball.style.height = `${size}px`;
         ball.style.backgroundColor = color;
-        ball.style.left = `${x}px`;
-        ball.style.top = `${y}px`;
+
+        // Use transform for positioning
+        ball.style.transform = `translate(${x}px, ${y}px)`;
 
         body.appendChild(ball);
 
@@ -29,6 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
             x,
             y,
             size,
+            halfSize: size / 2,
             velocityX: Math.random() * 2 - 1,
             velocityY: Math.random() * 2 - 1,
         });
@@ -61,12 +87,14 @@ document.addEventListener("DOMContentLoaded", () => {
             // Check for collisions with other balls
             for (let j = i + 1; j < balls.length; j++) {
                 const otherBall = balls[j];
-                const dx = (ball.x + ball.size / 2) - (otherBall.x + otherBall.size / 2);
-                const dy = (ball.y + ball.size / 2) - (otherBall.y + otherBall.size / 2);
-                const distance = Math.sqrt(dx * dx + dy * dy);
+                const dx = (ball.x + ball.halfSize) - (otherBall.x + otherBall.halfSize);
+                const dy = (ball.y + ball.halfSize) - (otherBall.y + otherBall.halfSize);
+                const distanceSquared = dx * dx + dy * dy;
+                const minDistance = ball.halfSize + otherBall.halfSize;
 
-                if (distance < (ball.size / 2 + otherBall.size / 2)) {
+                if (distanceSquared < minDistance * minDistance) {
                     // Resolve collision
+                    const distance = Math.sqrt(distanceSquared) || 1;
                     const nx = dx / distance;
                     const ny = dy / distance;
                     const p = 2 * (ball.velocityX * nx + ball.velocityY * ny -
@@ -79,17 +107,43 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
+            // Check for collisions with letters
+            letters.forEach((letter) => {
+                const rect = letter.rect;
+                if (
+                    ball.x + ball.size > rect.left &&
+                    ball.x < rect.right &&
+                    ball.y + ball.size > rect.top &&
+                    ball.y < rect.bottom
+                ) {
+                    // Determine collision side
+                    const overlapX = (ball.x + ball.halfSize) - (rect.left + rect.width / 2);
+                    const overlapY = (ball.y + ball.halfSize) - (rect.top + rect.height / 2);
+                    if (Math.abs(overlapX) > Math.abs(overlapY)) {
+                        ball.velocityX = -ball.velocityX;
+                        ball.x += ball.velocityX; // Move ball out of collision
+                    } else {
+                        ball.velocityY = -ball.velocityY;
+                        ball.y += ball.velocityY; // Move ball out of collision
+                    }
+                }
+            });
+
             // Apply friction
             ball.velocityX *= 0.98;
             ball.velocityY *= 0.98;
 
-            // Update position
-            ball.element.style.left = `${ball.x}px`;
-            ball.element.style.top = `${ball.y}px`;
+            // Update position using CSS transform
+            ball.element.style.transform = `translate(${ball.x}px, ${ball.y}px)`;
         });
 
         requestAnimationFrame(updateBalls);
     }
 
     updateBalls();
+
+    // Update letter positions on resize
+    window.addEventListener("resize", () => {
+        updateLetters();
+    });
 });
