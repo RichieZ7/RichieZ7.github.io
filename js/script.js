@@ -4,31 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const balls = [];
     const radius = 50; // Radius for mouse interaction
 
-    const textContainer = document.getElementById("background");
-    const textElements = textContainer.querySelectorAll("h1, p");
-
-    // Collect letters and their positions
-    let letters = [];
-    function updateLetters() {
-        letters = [];
-        textElements.forEach((element) => {
-            const rect = element.getBoundingClientRect();
-            letters.push({
-                rect: {
-                    left: rect.left,
-                    right: rect.right,
-                    top: rect.top,
-                    bottom: rect.bottom,
-                    width: rect.width,
-                    height: rect.height,
-                    x: rect.x,
-                    y: rect.y,
-                },
-            });
-        });
-    }
-    updateLetters();
-
     // Generate balls
     for (let i = 0; i < numBalls; i++) {
         const ball = document.createElement("div");
@@ -150,28 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
-            // Check for collisions with letters
-            letters.forEach((letter) => {
-                const rect = letter.rect;
-                if (
-                    ball.x + ball.size > rect.left &&
-                    ball.x < rect.right &&
-                    ball.y + ball.size > rect.top &&
-                    ball.y < rect.bottom
-                ) {
-                    // Determine collision side
-                    const overlapX = (ball.x + ball.halfSize) - (rect.left + rect.width / 2);
-                    const overlapY = (ball.y + ball.halfSize) - (rect.top + rect.height / 2);
-                    if (Math.abs(overlapX) > Math.abs(overlapY)) {
-                        ball.velocityX = -ball.velocityX;
-                        ball.x += ball.velocityX; // Move ball out of collision
-                    } else {
-                        ball.velocityY = -ball.velocityY;
-                        ball.y += ball.velocityY; // Move ball out of collision
-                    }
-                }
-            });
-
             // Apply friction
             ball.velocityX *= 0.98;
             ball.velocityY *= 0.98;
@@ -189,9 +142,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateBalls();
 
-    // Update letter positions and adjust balls on window resize
+    // Adjust balls on window resize
     window.addEventListener("resize", () => {
-        updateLetters();
         // Ensure balls stay within window bounds
         balls.forEach((ball) => {
             if (ball.x + ball.size > window.innerWidth) {
