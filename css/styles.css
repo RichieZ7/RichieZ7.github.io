@@ -57,13 +57,41 @@ p {
     content: '';
     position: absolute;
     left: 50%;
-    bottom: -2px; /* Adjusts the distance below the text */
+    bottom: -1px; /* Adjusts the distance below the text */
     transform: translateX(-50%);
-    width: 80%; /* Adjusts the underline length */
+    width: 97%; /* Adjusts the underline length */
     height: 2px; /* Adjusts the underline thickness */
     background-color: #ADD8E6; /* Light blue color */
 }
 
 .word {
     display: inline-block;
+}
+
+/* Contact Section */
+.contact {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    gap: 20px; /* Space between items */
+    margin-top: 20px; /* Space above the icons */
+}
+
+.contact-link {
+    text-decoration: none; /* Remove underline */
+    color: #ADD8E6; /* Light blue color for text */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center; /* Align icon and text vertically */
+    gap: 8px; /* Space between icon and text */
+    transition: color 0.3s ease;
+}
+
+.contact-link:hover {
+    color: #ffffff; /* Change color on hover */
+}
+
+.contact-link i {
+    font-size: 1.5em; /* Icon size */
 }
