@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const numBalls = 1000; // Number of balls
     const balls = [];
     const radius = 50; // Reduced radius around the cursor
-    const driftSpeed = 2; // Speed of drifting after a push
 
     // Generate random balls
     for (let i = 0; i < numBalls; i++) {
