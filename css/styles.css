@@ -5,7 +5,7 @@ body {
     height: 100vh; /* Full height */
     width: 100vw; /* Full width */
     overflow: hidden; /* Prevent scrolling */
-    background-color: #000000; /* Dark background */
+    background-color: #343434; /* Dark background */
     position: relative;
 }
 
@@ -48,4 +48,3 @@ p {
     border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Shadow for depth */
 }
-
