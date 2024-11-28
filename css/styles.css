@@ -63,3 +63,7 @@ p {
     height: 2px; /* Adjusts the underline thickness */
     background-color: #ADD8E6; /* Light blue color */
 }
+
+.word {
+    display: inline-block;
+}
