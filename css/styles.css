@@ -5,7 +5,7 @@ body {
     height: 100vh; /* Full height */
     width: 100vw; /* Full width */
     overflow: hidden; /* Prevent scrolling */
-    background-color: #0046b7; /* Dark background */
+    background-color: #000000; /* Dark background */
     position: relative;
 }
 
