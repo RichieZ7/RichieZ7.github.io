@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const ball = document.createElement("div");
         ball.classList.add("ball");
 
-        const size = Math.random() * 50 + 100;
+        const size = Math.random() * 20 + 10;
         const x = Math.random() * (window.innerWidth - size);
         const y = Math.random() * (window.innerHeight - size);
 
