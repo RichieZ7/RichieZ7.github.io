@@ -1,47 +1,21 @@
-/* css/styles.css */
-
-/* General body styles */
+/* General body styling */
 body {
     margin: 0;
     padding: 0;
-    height: 100vh;
+    height: 100vh; /* Full height */
+    width: 100vw; /* Full width */
+    overflow: hidden; /* Prevent scrolling */
+    background-color: #000; /* Dark background */
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #1a1a1a;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
-}
-
-/* Centered content */
-#background {
-    text-align: center;
-    z-index: 1;
-    position: relative;
 }
 
 /* Ball styling */
 .ball {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ff6b6b, #f94f6b);
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.8;
-}
-
-/* Animation for a floating effect */
-@keyframes float {
-    0% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-20px);
-    }
-    100% {
-        transform: translateY(0);
-    }
+    border-radius: 50%; /* Makes the ball circular */
+    pointer-events: none; /* Ignore mouse clicks on balls */
+    transition: transform 0.1s ease; /* Smooth movement effect */
 }

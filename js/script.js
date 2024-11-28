@@ -1,35 +1,69 @@
-// js/script.js
-
+// Wait for the DOM to load
 document.addEventListener("DOMContentLoaded", () => {
-    const background = document.getElementById("background");
+    const body = document.body;
+    const numBalls = 1000; // Number of balls
+    const balls = [];
+    const radius = 100; // Radius around cursor where balls can't be
 
-    // Create moving balls
-    for (let i = 0; i < 30; i++) {
+    // Generate random balls
+    for (let i = 0; i < numBalls; i++) {
         const ball = document.createElement("div");
-        ball.className = "ball";
+        ball.classList.add("ball");
 
-        // Randomize ball starting positions
-        ball.style.left = `${Math.random() * 100}vw`;
-        ball.style.top = `${Math.random() * 100}vh`;
+        // Random size (10px to 30px)
+        const size = Math.random() * 20 + 10;
 
-        // Randomize ball size
-        const size = Math.random() * 15 + 10;
+        // Random position
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+
+        // Random color
+        const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+
+        // Apply styles to the ball
         ball.style.width = `${size}px`;
         ball.style.height = `${size}px`;
+        ball.style.backgroundColor = color;
+        ball.style.left = `${x}px`;
+        ball.style.top = `${y}px`;
 
-        background.appendChild(ball);
+        // Add ball to the body
+        body.appendChild(ball);
+        balls.push({ element: ball, x, y, size });
     }
 
-    // Move balls based on cursor
+    // Cursor movement
     document.addEventListener("mousemove", (e) => {
-        const balls = document.querySelectorAll(".ball");
-        balls.forEach((ball, index) => {
-            // Calculate ball movement based on cursor position
-            const x = (e.clientX - window.innerWidth / 2) / (index + 5);
-            const y = (e.clientY - window.innerHeight / 2) / (index + 5);
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
 
-            // Apply the movement
-            ball.style.transform = `translate(${x}px, ${y}px)`;
+        balls.forEach((ball) => {
+            const dx = ball.x - mouseX;
+            const dy = ball.y - mouseY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // If the ball is within the radius, push it away
+            if (distance < radius) {
+                const angle = Math.atan2(dy, dx);
+                const pushDistance = radius - distance;
+
+                // Move the ball
+                ball.x += Math.cos(angle) * pushDistance;
+                ball.y += Math.sin(angle) * pushDistance;
+
+                // Update the ball's position
+                ball.element.style.transform = `translate(${ball.x}px, ${ball.y}px)`;
+            }
+        });
+    });
+
+    // Adjust balls when the window is resized
+    window.addEventListener("resize", () => {
+        balls.forEach((ball) => {
+            ball.x = Math.random() * window.innerWidth;
+            ball.y = Math.random() * window.innerHeight;
+            ball.element.style.left = `${ball.x}px`;
+            ball.element.style.top = `${ball.y}px`;
         });
     });
 });
