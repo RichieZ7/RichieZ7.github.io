@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
     const numBalls = 10; // Adjust as needed
     const balls = [];
-    const radius = 50;
+    const radius = 50; // Cursor interaction radius
 
     // Generate balls
     for (let i = 0; i < numBalls; i++) {
@@ -33,8 +33,36 @@ document.addEventListener("DOMContentLoaded", () => {
             radius: size / 2,
             velocityX: Math.random() * 2 - 1,
             velocityY: Math.random() * 2 - 1,
+            scaleX: 1,
+            scaleY: 1,
         });
     }
+
+    // Cursor movement
+    document.addEventListener("mousemove", (e) => {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        balls.forEach((ball) => {
+            const dx = ball.x + ball.radius - mouseX;
+            const dy = ball.y + ball.radius - mouseY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < radius) {
+                const angle = Math.atan2(dy, dx);
+                const pushDistance = radius - distance;
+
+                const force = pushDistance * 0.1;
+                ball.velocityX += Math.cos(angle) * force;
+                ball.velocityY += Math.sin(angle) * force;
+
+                // Apply deformation based on force
+                const deformation = Math.min(force * 0.05, 0.3);
+                ball.scaleX = 1 + deformation;
+                ball.scaleY = 1 - deformation;
+            }
+        });
+    });
 
     function resolveCollision(ball1, ball2) {
         const dx = ball1.x + ball1.radius - (ball2.x + ball2.radius);
@@ -110,9 +138,14 @@ document.addEventListener("DOMContentLoaded", () => {
             ball.velocityX *= 0.98;
             ball.velocityY *= 0.98;
 
-            // Update position
+            // Restore to original scale
+            ball.scaleX += (1 - ball.scaleX) * 0.1;
+            ball.scaleY += (1 - ball.scaleY) * 0.1;
+
+            // Update position and transformation
             ball.element.style.left = `${ball.x}px`;
             ball.element.style.top = `${ball.y}px`;
+            ball.element.style.transform = `scale(${ball.scaleX}, ${ball.scaleY})`;
         });
 
         requestAnimationFrame(updateBalls);

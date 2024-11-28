@@ -46,7 +46,7 @@ p {
     transition: transform 0.1s ease; /* Smooth movement effect */
     z-index: 1; /* Ensure balls are behind the text */
     border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Shadow for depth */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Shadow for depth */
 }
 
 .minimalist-underline {
