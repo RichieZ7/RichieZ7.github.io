@@ -13,9 +13,29 @@ body {
 #background {
     position: relative;
     z-index: 2; /* Ensures text stays on top of the balls */
-    text-align: center; /* Centers the text horizontally */
+    display: flex; /* Enable Flexbox */
+    flex-direction: column; /* Arrange items vertically */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    height: 100vh; /* Full viewport height */
     color: #fff; /* White text color for visibility */
     pointer-events: none; /* Allow interactions to pass through */
+}
+
+/* Title styling */
+h1 {
+    font-family: 'Montserrat', sans-serif; /* Sleek font */
+    font-weight: 300; /* Light weight */
+    font-size: 4em; /* Adjust as needed */
+    margin: 0;
+}
+
+/* Paragraph styling */
+p {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 1.5em;
+    margin: 0;
 }
 
 /* Ball styling */
@@ -25,4 +45,6 @@ body {
     pointer-events: none; /* Ignore mouse clicks on balls */
     transition: transform 0.1s ease; /* Smooth movement effect */
     z-index: 1; /* Ensure balls are behind the text */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Shadow for depth */
 }

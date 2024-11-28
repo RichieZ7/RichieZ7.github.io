@@ -16,8 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const x = Math.random() * window.innerWidth;
         const y = Math.random() * window.innerHeight;
 
-        // Random color
-        const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        // Random lightness for shades of gray
+        const lightness = Math.random() * 100; // 0% to 100%
+        const color = `hsl(0, 0%, ${lightness}%)`;
 
         // Apply styles to the ball
         ball.style.width = `${size}px`;
