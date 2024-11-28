@@ -147,21 +147,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 resolveCollision(ball, balls[j]);
             }
 
+            ball.scaleX += (1 - ball.scaleX) * 0.1;
+            ball.scaleY += (1 - ball.scaleY) * 0.1;
+
+
             // Restore to original scale
-            if (Math.abs(1 - ball.scaleX) < 1.03) {
-                ball.scaleX = 1;
-            }
-            else {
-                ball.scaleX += (1 - ball.scaleX) * 0.1;
-            }
-            if (Math.abs(1 - ball.scaleY) < 1.03) {
-                ball.scaleY = 1;
-                ball.y = ball.radius;
-                ball.velocityY = 0;
-            }
-            else {
-                ball.scaleY += (1 - ball.scaleY) * 0.1;
-            }
+            // if (Math.abs(1 - ball.scaleX) < 1.03) {
+            //     ball.scaleX = 1;
+            // }
+            // else {
+            //     ball.scaleX += (1 - ball.scaleX) * 0.1;
+            // }
+            // if (Math.abs(1 - ball.scaleY) < 1.03) {
+            //     ball.scaleY = 1;
+            // }
+            // else {
+            //     ball.scaleY += (1 - ball.scaleY) * 0.1;
+            // }
 
             // Update position and transformation
             ball.element.style.left = `${ball.x - ball.radius}px`;
