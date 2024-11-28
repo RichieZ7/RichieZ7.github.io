@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
-    const numBalls = 4; // Adjust as needed
+    const numBalls = 2; // Adjust as needed
     const balls = [];
     const radius = 50; // Radius for mouse interaction
 
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function updateBalls() {
-        balls.forEach((ball, i) => {
+        balls.forEach((ball) => {
             ball.x += ball.velocityX;
             ball.y += ball.velocityY;
 
@@ -100,29 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 ball.scaleX = 0.7;
                 ball.scaleY = 1.3;
-            }
-
-            // Check for collisions with other balls
-            for (let j = i + 1; j < balls.length; j++) {
-                const otherBall = balls[j];
-                const dx = (ball.x + ball.halfSize) - (otherBall.x + otherBall.halfSize);
-                const dy = (ball.y + ball.halfSize) - (otherBall.y + otherBall.halfSize);
-                const distanceSquared = dx * dx + dy * dy;
-                const minDistance = ball.halfSize + otherBall.halfSize;
-
-                if (distanceSquared < minDistance * minDistance) {
-                    // Resolve collision
-                    const distance = Math.sqrt(distanceSquared) || 1;
-                    const nx = dx / distance;
-                    const ny = dy / distance;
-                    const p = 2 * (ball.velocityX * nx + ball.velocityY * ny -
-                        otherBall.velocityX * nx - otherBall.velocityY * ny) /
-                        (ball.size + otherBall.size);
-                    ball.velocityX -= p * otherBall.size * nx;
-                    ball.velocityY -= p * otherBall.size * ny;
-                    otherBall.velocityX += p * ball.size * nx;
-                    otherBall.velocityY += p * ball.size * ny;
-                }
             }
 
             // Apply friction
