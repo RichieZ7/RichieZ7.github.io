@@ -31,7 +31,6 @@ body {
     pointer-events: none;
     z-index: 0;
     opacity: 0.8;
-    animation: float 4s infinite ease-in-out;
 }
 
 /* Animation for a floating effect */

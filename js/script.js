@@ -24,8 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("mousemove", (e) => {
         const balls = document.querySelectorAll(".ball");
         balls.forEach((ball, index) => {
-            const x = e.clientX / (index + 1);
-            const y = e.clientY / (index + 1);
+            // Calculate ball movement based on cursor position
+            const x = (e.clientX - window.innerWidth / 2) / (index + 5);
+            const y = (e.clientY - window.innerHeight / 2) / (index + 5);
+
+            // Apply the movement
             ball.style.transform = `translate(${x}px, ${y}px)`;
         });
     });
