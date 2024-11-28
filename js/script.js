@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
-    const numBalls = 3; // Adjust as needed
+    const numBalls = 10; // Adjust as needed
     const balls = [];
     const radius = 50;
 
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const ball = document.createElement("div");
         ball.classList.add("ball");
 
-        const size = Math.random() * 50 + 100;
+        const size = Math.random() * 50 + 75;
         const x = Math.random() * (window.innerWidth - size);
         const y = Math.random() * (window.innerHeight - size);
 
@@ -107,19 +107,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < (ball.size + otherBall.size) / 2) {
-                    // Simple elastic collision physics
+                    // Collision detected
                     const angle = Math.atan2(dy, dx);
                     const overlap = (ball.size + otherBall.size) / 2 - distance;
 
-                    // Separate the balls to prevent overlap
-                    ball.x -= Math.cos(angle) * overlap / 2;
-                    ball.y -= Math.sin(angle) * overlap / 2;
-                    otherBall.x += Math.cos(angle) * overlap / 2;
-                    otherBall.y += Math.sin(angle) * overlap / 2;
+                    // Separate the balls slightly
+                    const separationForce = Math.min(overlap, 1); // Limit the correction force
+                    ball.x -= Math.cos(angle) * separationForce / 2;
+                    ball.y -= Math.sin(angle) * separationForce / 2;
+                    otherBall.x += Math.cos(angle) * separationForce / 2;
+                    otherBall.y += Math.sin(angle) * separationForce / 2;
 
-                    // Swap velocities for a basic elastic collision effect
-                    [ball.velocityX, otherBall.velocityX] = [otherBall.velocityX, ball.velocityX];
-                    [ball.velocityY, otherBall.velocityY] = [otherBall.velocityY, ball.velocityY];
+                    // Swap velocities with a small random perturbation
+                    const tempVx = ball.velocityX;
+                    const tempVy = ball.velocityY;
+                    ball.velocityX = otherBall.velocityX + (Math.random() * 0.2 - 0.1);
+                    ball.velocityY = otherBall.velocityY + (Math.random() * 0.2 - 0.1);
+                    otherBall.velocityX = tempVx + (Math.random() * 0.2 - 0.1);
+                    otherBall.velocityY = tempVy + (Math.random() * 0.2 - 0.1);
                 }
             }
 
