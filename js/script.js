@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const body = document.body;
-    const numBalls = 5; // Adjust as needed
+    const numBalls = 10; // Adjust as needed
     const balls = [];
     const radius = 50;
 
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const ball = document.createElement("div");
         ball.classList.add("ball");
 
-        const size = Math.random() * 20 + 10;
+        const size = Math.random() * 30 + 50;
         const x = Math.random() * (window.innerWidth - size);
         const y = Math.random() * (window.innerHeight - size);
 
