@@ -48,3 +48,18 @@ p {
     border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Shadow for depth */
 }
+
+.minimalist-underline {
+    position: relative;
+}
+
+.minimalist-underline::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -5px; /* Adjusts the distance below the text */
+    transform: translateX(-50%);
+    width: 50%; /* Adjusts the underline length */
+    height: 2px; /* Adjusts the underline thickness */
+    background-color: #ADD8E6; /* Light blue color */
+}
