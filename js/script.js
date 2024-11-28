@@ -148,13 +148,18 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Restore to original scale
-            ball.scaleX += (1 - ball.scaleX) * 0.1;
             if (Math.abs(1 - ball.scaleX) < 1.05) {
                 ball.scaleX = 1;
             }
-            ball.scaleY += (1 - ball.scaleY) * 0.1;
+            else {
+                ball.scaleX += (1 - ball.scaleX) * 0.1;
+            }
             if (Math.abs(1 - ball.scaleY) < 1.05) {
                 ball.scaleY = 1;
+                ball.y = ball.radius
+            }
+            else {
+                ball.scaleY += (1 - ball.scaleY) * 0.1;
             }
 
             // Update position and transformation
