@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i < numBalls; i++) {
         const ball = document.createElement("div");
         ball.classList.add("ball");
-
         const size = Math.random() * 100 + 50; // Random size between 50px and 150px
         const x = Math.random() * (window.innerWidth - size) + size / 2; // Adjust to center
         const y = Math.random() * (window.innerHeight - size) + size / 2; // Adjust to center
@@ -71,6 +70,17 @@ document.addEventListener("DOMContentLoaded", () => {
             // Swap velocities
             [ball1.velocityX, ball2.velocityX] = [ball2.velocityX, ball1.velocityX];
             [ball1.velocityY, ball2.velocityY] = [ball2.velocityY, ball1.velocityY];
+
+            // Apply deformation based on collision angle
+            const angle = Math.atan2(dy, dx);
+            const deformation = 0.2; // Deformation factor
+            const absCos = Math.abs(Math.cos(angle)); // Horizontal influence
+            const absSin = Math.abs(Math.sin(angle)); // Vertical influence
+
+            ball1.scaleX = 1 + deformation * absCos;
+            ball1.scaleY = 1 + deformation * absSin;
+            ball2.scaleX = 1 + deformation * absCos;
+            ball2.scaleY = 1 + deformation * absSin;
         }
     }
 
@@ -117,15 +127,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             if (ball.y + ball.radius > window.innerHeight) {
                 ball.y = window.innerHeight - ball.radius;
-
-                if (ball.velocityY < 0.1) {
-                    ball.velocityY = 0;
-                }
-                {
-                    ball.velocityY = -ball.velocityY * damping;
-                    ball.scaleX = 1.2;
-                    ball.scaleY = 0.8;
-                }
+                ball.velocityY = -ball.velocityY * damping;
+                ball.scaleX = 1.2;
+                ball.scaleY = 0.8;
             }
 
             // Check collision with cursor
