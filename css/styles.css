@@ -24,9 +24,9 @@ body {
 
 /* Title styling */
 h1 {
-    font-family: 'Montserrat', sans-serif; /* Sleek font */
-    font-weight: 300; /* Light weight */
-    font-size: 4em; /* Adjust as needed */
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 3.75vw; /* Responsive font size based on viewport width */
     margin: 0;
     pointer-events: auto;
 }
@@ -35,7 +35,7 @@ h1 {
 p {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
-    font-size: 1.5em;
+    font-size: 1.35vw; /* Responsive font size based on viewport width */
     margin: 0;
     pointer-events: auto;
 }
@@ -47,8 +47,8 @@ p {
     pointer-events: none; /* Ignore mouse clicks on balls */
     transition: transform 0.1s ease; /* Smooth movement effect */
     z-index: 1; /* Ensure balls are behind the text */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Light border */
-    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Shadow for depth */
+    border: 0.1vw solid rgba(255, 255, 255, 0.2); /* Light border with relative size */
+    box-shadow: 0 0 0.5vw rgba(255, 255, 255, 0.5); /* Shadow for depth with relative size */
 }
 
 .minimalist-underline {
@@ -61,8 +61,8 @@ p {
     left: 50%;
     top: 85%; /* Adjusts the distance below the text */
     transform: translateX(-50%);
-    width: 100%; /* Adjusts the underline length */
-    height: 2px; /* Adjusts the underline thickness */
+    width: 100%; /* Underline length relative to the text */
+    height: 0.1vw; /* Adjusts the underline thickness in relation to viewport width */
     background-color: #e2e6ad; /* Light yellow color */
 }
 
@@ -74,7 +74,7 @@ p {
 
 .highlight-on-hover:hover {
     background-color: #ADD8E6; /* Light blue color */
-    border-radius: 4px; /* Optional: Rounded edges for the highlight */
+    border-radius: 0.4vw; /* Optional: Rounded edges for the highlight, relative to viewport width */
 }
 
 .word {
@@ -83,15 +83,15 @@ p {
 
 /* Contact Section */
 .contact-link i {
-    font-size: 1.5em; /* Icon size */
+    font-size: 2vw; /* Responsive icon size based on viewport width */
 }
 
 /* Contact Section */
 .contact-only {
     pointer-events: auto; /* Enable mouse interactions */
     display: flex;
-    gap: 40px; /* Space between icons */
-    margin-top: 20px; /* Space above the icons */
+    gap: 2vw; /* Space between icons relative to viewport width */
+    margin-top: 2vh; /* Space above the icons relative to viewport height */
     opacity: 0;
     transition: opacity 1s ease-in-out;
 }
@@ -99,7 +99,7 @@ p {
 .contact-link {
     text-decoration: none; /* Remove underline */
     color: #ADD8E6; /* Light blue color for icons */
-    font-size: 1.5em; /* Icon size */
+    font-size: 2vw; /* Icon size relative to viewport width */
     transition: color 0.3s ease;
 }
 
@@ -109,7 +109,7 @@ p {
 
 .typed-cursor {
     display: inline-block;
-    font-size: 1em; /* Adjust size as needed */
+    font-size: 3.5vw; /* Adjust size as needed for responsiveness */
     color: #fff; /* Adjust color */
     animation: blink 0.7s step-end infinite;
 }

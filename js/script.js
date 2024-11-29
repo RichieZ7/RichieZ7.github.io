@@ -30,18 +30,21 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i < numBalls; i++) {
         const ball = document.createElement("div");
         ball.classList.add("ball");
-        const size = Math.random() * 100 + 50; // Random size between 50px and 150px
-        const x = Math.random() * (window.innerWidth - size) + size / 2; // Adjust to center
-        const y = Math.random() * (window.innerHeight - size) + size / 2; // Adjust to center
+
+        const sizePercent = Math.random() * 5 + 2.5; // Random size between 5% and 15% of viewport width
+        const sizePx = (sizePercent / 100) * window.innerWidth;
+
+        const x = Math.random() * (window.innerWidth - sizePx) + sizePx / 2;
+        const y = Math.random() * (window.innerHeight - sizePx) + sizePx / 2;
         const color = ballColors[i];
 
-        ball.style.width = `${size}px`;
-        ball.style.height = `${size}px`;
+        ball.style.width = `${sizePx}px`;
+        ball.style.height = `${sizePx}px`;
         ball.style.backgroundColor = color;
         ball.style.position = "absolute";
         ball.style.borderRadius = "50%";
-        ball.style.left = `${x - size / 2}px`;
-        ball.style.top = `${y - size / 2}px`;
+        ball.style.left = `${x - sizePx / 2}px`;
+        ball.style.top = `${y - sizePx / 2}px`;
 
         body.appendChild(ball);
 
@@ -49,21 +52,37 @@ document.addEventListener("DOMContentLoaded", () => {
             element: ball,
             x,
             y,
-            size,
-            radius: size / 2,
+            sizePercent,
+            sizePx,
+            radius: sizePx / 2,
             velocityX: Math.random() * 2 - 1,
             velocityY: Math.random() * 2 - 1,
             scaleX: 1,
             scaleY: 1,
-            isAtRest: false, // New property to track if the ball is at rest
+            isAtRest: false,
         });
     }
+
 
     // Cursor movement
     document.addEventListener("mousemove", (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
     });
+
+    // Touch movement
+    document.addEventListener("touchmove", (e) => {
+        e.preventDefault(); // Prevent scrolling
+        mouseX = e.touches[0].clientX;
+        mouseY = e.touches[0].clientY;
+    }, { passive: false });
+
+    // Reset mouse position on touch end
+    document.addEventListener("touchend", () => {
+        mouseX = null;
+        mouseY = null;
+    });
+
 
     // Ball Collisions
     function resolveCollision(ball1, ball2) {
@@ -157,14 +176,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Adjust balls on window resize
+    let resizeTimeout;
     window.addEventListener("resize", () => {
-        balls.forEach((ball) => {
-            ball.x = Math.random() * (window.innerWidth - ball.size) + ball.radius;
-            ball.y = Math.random() * (window.innerHeight - ball.size) + ball.radius;
-            ball.element.style.left = `${ball.x - ball.radius}px`;
-            ball.element.style.top = `${ball.y - ball.radius}px`;
-        });
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            balls.forEach((ball) => {
+                // Recalculate size
+                const sizePx = (ball.sizePercent / 100) * window.innerWidth;
+                ball.sizePx = sizePx;
+                ball.radius = sizePx / 2;
+                ball.element.style.width = `${sizePx}px`;
+                ball.element.style.height = `${sizePx}px`;
+
+                // Adjust positions to stay within the viewport
+                ball.x = Math.min(ball.x, window.innerWidth - ball.radius);
+                ball.y = Math.min(ball.y, window.innerHeight - ball.radius);
+                ball.element.style.left = `${ball.x - ball.radius}px`;
+                ball.element.style.top = `${ball.y - ball.radius}px`;
+            });
+        }, 100);
     });
+    
 
     function updateBalls() {
         balls.forEach((ball, i) => {
@@ -345,16 +377,67 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-    
+
+        // Function to determine if the ball is touching a surface below it
+    function checkGroundContact(ball) {
+        // Check if the ball is touching the bottom wall (ground)
+        if (ball.y + ball.radius >= window.innerHeight) {
+            return true;
+        }
+
+        // Check if the ball is touching another ball below it
+        for (let i = 0; i < balls.length; i++) {
+            const otherBall = balls[i];
+            if (otherBall === ball) continue;
+
+            const dx = ball.x - otherBall.x;
+            const dy = ball.y - otherBall.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // If the ball is touching another ball beneath it
+            if (distance < ball.radius + otherBall.radius && dy > 0) {
+                return true;
+            }
+        }
+
+        // Check if the ball is touching a text element from below
+        for (const textEl of textElements) {
+            const rect = textEl.getBoundingClientRect();
+
+            // Check if the ball's bottom is within the vertical bounds of the text element
+            if (
+                ball.y + ball.radius >= rect.top &&
+                ball.y - ball.radius <= rect.bottom &&
+                ball.x + ball.radius >= rect.left &&
+                ball.x - ball.radius <= rect.right
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // Function to determine if the ball should come to rest
     function checkIfAtRest(ball) {
         const speed = Math.sqrt(ball.velocityX ** 2 + ball.velocityY ** 2);
-        if (speed < 1.5) {
+        if (speed < 1.5 && checkGroundContact(ball)) {
             ball.velocityX = 0;
             ball.velocityY = 0;
             ball.isAtRest = true;
         }
     }
+
+    
+    // Function to determine if the ball should come to rest
+    // function checkIfAtRest(ball) {
+    //     const speed = Math.sqrt(ball.velocityX ** 2 + ball.velocityY ** 2);
+    //     if (speed < 1.5) {
+    //         ball.velocityX = 0;
+    //         ball.velocityY = 0;
+    //         ball.isAtRest = true;
+    //     }
+    // }
     
 
     updateBalls();
