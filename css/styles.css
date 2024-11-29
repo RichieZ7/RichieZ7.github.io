@@ -28,6 +28,7 @@ h1 {
     font-weight: 300; /* Light weight */
     font-size: 4em; /* Adjust as needed */
     margin: 0;
+    pointer-events: auto;
 }
 
 /* Paragraph styling */
@@ -36,6 +37,7 @@ p {
     font-weight: 400;
     font-size: 1.5em;
     margin: 0;
+    pointer-events: auto;
 }
 
 /* Ball styling */
@@ -57,11 +59,22 @@ p {
     content: '';
     position: absolute;
     left: 50%;
-    bottom: -1px; /* Adjusts the distance below the text */
+    top: 85%; /* Adjusts the distance below the text */
     transform: translateX(-50%);
-    width: 97%; /* Adjusts the underline length */
+    width: 100%; /* Adjusts the underline length */
     height: 2px; /* Adjusts the underline thickness */
+    background-color: #e2e6ad; /* Light yellow color */
+}
+
+.highlight-on-hover {
+    position: relative;
+    transition: background-color 0.3s ease; /* Smooth hover transition */
+    pointer-events: auto;
+}
+
+.highlight-on-hover:hover {
     background-color: #ADD8E6; /* Light blue color */
+    border-radius: 4px; /* Optional: Rounded edges for the highlight */
 }
 
 .word {
@@ -69,35 +82,46 @@ p {
 }
 
 /* Contact Section */
-.contact {
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    gap: 20px; /* Space between items */
-    margin-top: 20px; /* Space above the icons */
-}
-
-.contact-link {
-    text-decoration: none; /* Remove underline */
-    color: #ADD8E6; /* Light blue color for text */
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 400;
-    font-size: 1.2em;
-    display: flex;
-    align-items: center; /* Align icon and text vertically */
-    gap: 8px; /* Space between icon and text */
-    transition: color 0.3s ease;
-}
-
-.contact-link:hover {
-    color: #ffffff; /* Change color on hover */
-}
-
 .contact-link i {
     font-size: 1.5em; /* Icon size */
 }
 
 /* Contact Section */
 .contact-only {
+    pointer-events: auto; /* Enable mouse interactions */
     display: flex;
     gap: 40px; /* Space between icons */
+    margin-top: 20px; /* Space above the icons */
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.contact-link {
+    text-decoration: none; /* Remove underline */
+    color: #ADD8E6; /* Light blue color for icons */
+    font-size: 1.5em; /* Icon size */
+    transition: color 0.3s ease;
+}
+
+.contact-link:hover {
+    color: #e2e6ad; /* Change color on hover */
+}
+
+.typed-cursor {
+    display: inline-block;
+    font-size: 1em; /* Adjust size as needed */
+    color: #fff; /* Adjust color */
+    animation: blink 0.7s step-end infinite;
+}
+
+/* Blinking animation */
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+a.highlight-on-hover {
+    color: inherit; /* Inherit the color from the parent element */
+    text-decoration: none; /* Remove the underline */
 }
