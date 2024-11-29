@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Maximum deformation parameters
     const maxDeformation = 0.3; // Increased maximum deformation factor
-    const speedThreshold = 20; // Speed at which maximum deformation occurs
+    const speedThreshold = 15; // Speed at which maximum deformation occurs
 
     // Function to calculate deformation based on speed
     function calculateDeformation(speed, maxDeformation, speedThreshold) {
@@ -99,10 +99,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const deformation = calculateDeformation(Math.abs(relativeVelocity), maxDeformation, speedThreshold);
 
             // Apply deformation
-            ball1.scaleX = 1 + deformation * Math.abs(nx);
-            ball1.scaleY = 1 + deformation * Math.abs(ny);
-            ball2.scaleX = 1 + deformation * Math.abs(nx);
-            ball2.scaleY = 1 + deformation * Math.abs(ny);
+            if (Math.abs(nx) > Math.abs(ny)){
+                ball1.scaleX = 1 - deformation;
+                ball1.scaleY = 1 + deformation;
+                ball2.scaleX = 1 - deformation;
+                ball2.scaleY = 1 + deformation;
+            }
+            else {
+                ball1.scaleX = 1 + deformation;
+                ball1.scaleY = 1 - deformation;
+                ball2.scaleX = 1 + deformation;
+                ball2.scaleY = 1 - deformation;
+            }
         }
     }
 
@@ -251,12 +259,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const deformation = calculateDeformation(speed, maxDeformation, speedThreshold);
             if (horizontalCollision) {
                 // Horizontal collision: ScaleX decreases, ScaleY increases
-                ball.scaleX = 1 - deformation;
-                ball.scaleY = 1 + deformation;
+                ball.scaleX = 1 - deformation * damping;
+                ball.scaleY = 1 + deformation * damping;
             } else {
                 // Vertical collision: ScaleX increases, ScaleY decreases
-                ball.scaleX = 1 + deformation;
-                ball.scaleY = 1 - deformation;
+                ball.scaleX = 1 + deformation * damping;
+                ball.scaleY = 1 - deformation * damping;
             }
         }
     }
@@ -284,12 +292,12 @@ document.addEventListener("DOMContentLoaded", () => {
     
                 if (Math.abs(Math.cos(angle)) > Math.abs(Math.sin(angle))) {
                     // Horizontal collision: ScaleX decreases, ScaleY increases
-                    ball.scaleX = 1 - deformation * 0.5 * Math.cos(angle);
-                    ball.scaleY = 1 + deformation * 0.5 * Math.sin(angle);
+                    ball.scaleX = 1 - deformation * damping * Math.cos(angle);
+                    ball.scaleY = 1 + deformation * damping * Math.sin(angle);
                 } else {
                     // Vertical collision: ScaleX increases, ScaleY decreases
-                    ball.scaleX = 1 + deformation * 0.5 * Math.cos(angle);
-                    ball.scaleY = 1 - deformation * 0.5 * Math.sin(angle);
+                    ball.scaleX = 1 + deformation * damping * Math.cos(angle);
+                    ball.scaleY = 1 - deformation * damping * Math.sin(angle);
                 }
             }
         }
